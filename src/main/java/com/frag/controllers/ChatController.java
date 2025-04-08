@@ -10,9 +10,12 @@ public class ChatController {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
+            String body = "{\"query\":\"" + query + "\"}";
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://127.0.0.1:8000"))
-                    .GET()
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
