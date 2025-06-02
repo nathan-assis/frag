@@ -5,7 +5,7 @@ from src.api import app
 client = TestClient(app)
 
 
-def test_hello_world():
+def test_send_message():
     payload = {"text": "test message"}
     response = client.post("/api/v1/messages", json=payload)
 
