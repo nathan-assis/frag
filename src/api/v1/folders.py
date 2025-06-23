@@ -2,12 +2,13 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
 
-from src.schemas.folder import Folder, FolderOut
+from src.schemas.folder import Folder
+from src.schemas.response import Response
 
 router = APIRouter()
 
 
-@router.post("/folders", response_model=FolderOut)
+@router.post("/folders", response_model=Response)
 def receive_folder(folder: Folder):
     path = validate_folder(folder.path)
 
@@ -23,9 +24,7 @@ def receive_folder(folder: Folder):
     # feature: store processed chunks in Milvus
     print(f"[INFO] Pasta registrada para uso: {path}")
 
-    return FolderOut(
-        status="success", message=f"Pasta '{path}' registrada com sucesso."
-    )
+    return Response(status="success", message=f"Pasta '{path}' registrada com sucesso.")
 
 
 def validate_folder(path_str: str) -> Path:
