@@ -27,6 +27,22 @@ class RAGPipeline:
         set_path()
         set_files()
 
+    def __get_file_content(file: Path) -> str:
+        try:
+            suffix = file.suffix.lower()
+            match suffix:
+                case ".txt" | ".md":
+                    return file.read_text(encoding="utf-8")
+                case ".pdf":
+                    import pymupdf
+
+                    with pymupdf.open(file) as doc:
+                        text = chr(12).join([page.get_text() for page in doc])
+                    return text
+        except Exception as e:
+            print(f"[WARN] Erro ao ler {file}: {e}")
+            return None
+
     @staticmethod
     def process_folder(path: str) -> None:
         RAGPipeline.__set_folder(path)

@@ -54,3 +54,50 @@ def test_set_folder_with_file(tmp_path: Path):
 
     assert e.value.status_code == 400
     assert "Invalid path" in e.value.detail
+
+
+def test_get_file_content_txt(tmp_path: Path):
+    file_path = tmp_path / "file.txt"
+    file_path.write_text("hello world")
+
+    result = RAGPipeline._RAGPipeline__get_file_content(file_path)
+    assert result == "hello world"
+
+
+def test_get_file_content_md(tmp_path: Path):
+    file_path = tmp_path / "file.md"
+    file_path.write_text("hello world")
+
+    result = RAGPipeline._RAGPipeline__get_file_content(file_path)
+    assert result == "hello world"
+
+
+def test_get_file_content_pdf(tmp_path: Path):
+    import pymupdf
+
+    file_path = tmp_path / "file.pdf"
+
+    doc = pymupdf.open()
+    page = doc.new_page()
+    page.insert_text((72, 72), "hello world")
+    doc.save(str(file_path))
+    doc.close()
+
+    result = RAGPipeline._RAGPipeline__get_file_content(file_path)
+    assert "hello world" in result
+
+
+def test_get_file_content_arquivo_vazio(tmp_path: Path):
+    file_path = tmp_path / "file.txt"
+    file_path.write_text("")
+
+    result = RAGPipeline._RAGPipeline__get_file_content(file_path)
+    assert result == ""
+
+
+def test_get_file_content_extensao_nao_suportada(tmp_path: Path):
+    file_path = tmp_path / "file.jpg"
+    file_path.write_text("hello world")
+
+    result = RAGPipeline._RAGPipeline__get_file_content(file_path)
+    assert result is None
