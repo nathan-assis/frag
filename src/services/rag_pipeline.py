@@ -1,8 +1,12 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+import pymupdf
 from fastapi import HTTPException
 
 from src.schemas.folder import Folder
+
+from . import chunking, embedding
 
 
 class RAGPipeline:
@@ -34,8 +38,6 @@ class RAGPipeline:
                 case ".txt" | ".md":
                     return file.read_text(encoding="utf-8")
                 case ".pdf":
-                    import pymupdf
-
                     with pymupdf.open(file) as doc:
                         text = chr(12).join([page.get_text() for page in doc])
                     return text
@@ -43,6 +45,33 @@ class RAGPipeline:
             print(f"[WARN] Erro ao ler {file}: {e}")
             return None
 
+    def __process_content(content: str) -> list[tuple[str, list[float]]]:
+        chunks = chunking.fixed_size_with_overlap(content)
+        vectors = embedding.generate_embedding(chunks)
+
+        return list(zip(chunks, vectors, strict=False))
+
     @staticmethod
     def process_folder(path: str) -> None:
         RAGPipeline.__set_folder(path)
+
+        folder_data = []
+        with ThreadPoolExecutor() as executor:
+            content_future = {
+                executor.submit(RAGPipeline.__get_file_content, f): f
+                for f in RAGPipeline.__folder.files
+            }
+
+            file_futures = []
+            for future in as_completed(content_future):
+                content = future.result()
+                if content is None:
+                    continue
+
+                file_future = executor.submit(RAGPipeline.__process_content, content)
+                file_futures.append(file_future)
+
+            for future in as_completed(file_futures):
+                result = future.result()
+                if result is not None:
+                    folder_data.extend(result)
