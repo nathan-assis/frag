@@ -18,8 +18,8 @@ def test_set_folder_with_valid_folder(tmp_path: Path):
 
     assert folder is not None
     assert folder.path == tmp_path
-    assert str(files[0]) == str(folder.files[0])
-    assert str(files[1]) == str(folder.files[1])
+    assert files[0] in folder.files
+    assert files[1] in folder.files
     assert len(folder.files) == 2
 
 
