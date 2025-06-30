@@ -10,4 +10,8 @@ def test_send_message():
     response = client.post("/api/v1/messages", json=payload)
 
     assert response.status_code == 200
-    assert response.json() == {"text": "# TODO: implement rag!!!"}
+    assert response.json() == {
+        "status": "success",
+        "message": "# TODO: implement rag!!!",
+        "data": None,
+    }

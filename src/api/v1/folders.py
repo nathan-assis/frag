@@ -1,42 +1,17 @@
-from pathlib import Path
+from fastapi import APIRouter
 
-from fastapi import APIRouter, HTTPException
-
-from src.schemas.folder import Folder, FolderOut
+from src.schemas.folder import Folder
+from src.schemas.response import Response
+from src.services.rag_pipeline import RAGPipeline
 
 router = APIRouter()
 
 
-@router.post("/folders", response_model=FolderOut)
+@router.post("/folders", response_model=Response)
 def receive_folder(folder: Folder):
-    path = validate_folder(folder.path)
+    RAGPipeline.process_folder(folder.path)
+    print(f"[INFO] Pasta registrada para uso: {folder.path}")
 
-    if not path.exists():
-        raise HTTPException(status_code=400, detail="Caminho não encontrado.")
-
-    if not path.is_dir():
-        raise HTTPException(
-            status_code=400, detail="O caminho informado não é uma pasta."
-        )
-
-    # feature: process files from folder
-    # feature: store processed chunks in Milvus
-    print(f"[INFO] Pasta registrada para uso: {path}")
-
-    return FolderOut(
-        status="success", message=f"Pasta '{path}' registrada com sucesso."
+    return Response(
+        status="success", message=f"Pasta '{folder.path}' registrada com sucesso."
     )
-
-
-def validate_folder(path_str: str) -> Path:
-    path = Path(path_str)
-
-    if not path.exists():
-        raise HTTPException(status_code=400, detail="Caminho não encontrado.")
-
-    if not path.is_dir():
-        raise HTTPException(
-            status_code=400, detail="O caminho informado não é uma pasta."
-        )
-
-    return path
