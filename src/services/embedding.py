@@ -4,5 +4,8 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
 def generate_embedding(chunks: list[str]):
+    if not chunks or chunks == []:
+        return []
+
     embeddings = model.encode(chunks, precision="binary")
     return embeddings
