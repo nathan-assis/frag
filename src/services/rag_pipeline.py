@@ -10,7 +10,9 @@ class RAGPipeline:
 
     @staticmethod
     def process_folder(path_str: str) -> None:
-        RAGPipeline.__folder.path = Path(path_str)
+        if RAGPipeline.__folder is None:
+            RAGPipeline.__folder = FolderSchema(path=Path(path_str), data=[])
+
         files = [
             file
             for file in list(RAGPipeline.__folder.path.rglob("*"))
