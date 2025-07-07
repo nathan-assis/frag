@@ -22,6 +22,6 @@ class RAGPipeline:
             futures = [executor.submit(File, file) for file in files]
 
             for future in as_completed(futures):
-                RAGPipeline.__folder.files.append(future.result().get_file())
+                RAGPipeline.__folder.data.append(future.result().get_file())
 
         # TODO: save to milvus
