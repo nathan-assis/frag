@@ -7,5 +7,5 @@ def generate_embedding(chunks: list[str]):
     if not chunks or chunks == []:
         return []
 
-    embeddings = model.encode(chunks, precision="binary")
+    embeddings = model.encode(chunks, normalize_embeddings=True)
     return embeddings
