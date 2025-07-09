@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pymupdf
 
-from src.schemas.folder import File as FileSchema
+from src.schemas.file import File as FileSchema
 from src.services.chunking import fixed_size_with_overlap
 from src.services.embedding import generate_embedding
 
