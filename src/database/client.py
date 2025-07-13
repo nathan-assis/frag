@@ -32,10 +32,8 @@ class Client:
         schema = self._client.create_schema()
 
         schema.add_field(
-            field_name="id", datatype=DataType.INT64, is_primary=True, auto_id=True
-        )
-        schema.add_field(
             field_name="path",
+            is_primary=True,
             datatype=DataType.VARCHAR,
             nullable=False,
             max_length=1024,
