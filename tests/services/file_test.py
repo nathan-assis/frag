@@ -11,11 +11,12 @@ def test_file_txt(tmp_path: Path):
 
     file = File(file_path).get_file()
 
-    assert file["path"] == file_path
-    assert file["file_name"] == "test_file.txt"
-    assert file["extension"] == ".txt"
-    assert file["text"] == "hello world"
-    assert isinstance(file["chunks"], list)
+    assert isinstance(file, list)
+    assert file[0]["path"] == str(file_path)
+    assert file[0]["file_name"] == "test_file.txt"
+    assert file[0]["extension"] == ".txt"
+    assert file[0]["text"] == "hello world"
+    assert isinstance(file[0]["chunks"], str)
 
 
 def test_file_md(tmp_path: Path):
@@ -24,11 +25,12 @@ def test_file_md(tmp_path: Path):
 
     file = File(file_path).get_file()
 
-    assert file["path"] == file_path
-    assert file["file_name"] == "test_file.md"
-    assert file["extension"] == ".md"
-    assert file["text"] == "hello world"
-    assert isinstance(file["chunks"], list)
+    assert isinstance(file, list)
+    assert file[0]["path"] == str(file_path)
+    assert file[0]["file_name"] == "test_file.md"
+    assert file[0]["extension"] == ".md"
+    assert file[0]["text"] == "hello world"
+    assert isinstance(file[0]["chunks"], str)
 
 
 @pytest.mark.skipif(
@@ -40,18 +42,16 @@ def test_file_pdf(tmp_path: Path):
 
     file = File(file_path).get_file()
 
-    assert file["path"] == file_path
-    assert file["extension"] == ".pdf"
-    assert isinstance(file["text"], str)
-    assert isinstance(file["chunks"], list)
+    assert isinstance(file, list)
+    assert file[0]["path"] == str(file_path)
+    assert file[0]["extension"] == ".pdf"
+    assert isinstance(file[0]["text"], str)
+    assert isinstance(file[0]["chunks"], str)
 
 
 def test_file_invalid_path():
     file_path = Path("/invalid_path/invalid.txt")
     file = File(file_path).get_file()
 
-    assert file["path"] is None
-    assert file["extension"] is None
-    assert file["text"] is None
-    assert file["chunks"] == []
-    assert file["embeddings"] == []
+    assert isinstance(file, list)
+    assert len(file) == 0
