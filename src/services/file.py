@@ -28,12 +28,15 @@ class File:
 
         return text
 
-    def get_file(self) -> dict[FileSchema]:
-        return {
-            "path": self.__path,
-            "file_name": self.__file_name,
-            "extension": self.__extension,
-            "text": self.__text,
-            "chunks": self.__chunks,
-            "embeddings": self.__embeddings,
-        }
+    def get_file(self) -> list[dict[FileSchema]]:
+        return [
+            {
+                "path": str(self.__path),
+                "file_name": self.__file_name,
+                "extension": self.__extension,
+                "text": self.__text,
+                "chunks": chunk,
+                "embeddings": embedding,
+            }
+            for chunk, embedding in zip(self.__chunks, self.__embeddings, strict=False)
+        ]

@@ -15,7 +15,7 @@ class RAGPipeline:
             futures = [executor.submit(File, file) for file in files]
 
             for future in as_completed(futures):
-                data.append(future.result().get_file())
+                data.extend(future.result().get_file())
 
         db = Repository()
         db.upsert(data)
