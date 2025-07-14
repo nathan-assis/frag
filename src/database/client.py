@@ -26,7 +26,7 @@ class Client:
                 dimension=Constants.DIMENSION,
             )
 
-        self._client.load_collection(Constants.COLLECTION)
+        self._client.load_collection(collection_name=Constants.COLLECTION)
 
     def _create_schema(self):
         schema = self._client.create_schema()
@@ -35,28 +35,22 @@ class Client:
             field_name="path",
             is_primary=True,
             datatype=DataType.VARCHAR,
-            nullable=False,
             max_length=1024,
         )
         schema.add_field(
             field_name="file_name",
             datatype=DataType.VARCHAR,
-            nullable=False,
             max_length=100,
         )
         schema.add_field(
             field_name="extension",
             datatype=DataType.VARCHAR,
-            nullable=False,
             max_length=6,
         )
-        schema.add_field(
-            field_name="text", datatype=DataType.VARCHAR, nullable=True, max_length=4096
-        )
+        schema.add_field(field_name="text", datatype=DataType.VARCHAR, max_length=4096)
         schema.add_field(
             field_name="chunks",
             datatype=DataType.VARCHAR,
-            nullable=True,
             max_length=4096,
         )
         schema.add_field(
@@ -72,10 +66,10 @@ class Client:
 
         index_params.add_index(
             field_name="embeddings",
-            index_type="IVF_SQ8",
+            index_type="IVF_FLAT",
             metric_type="COSINE",
             params={"nlist": 128},
-            index_name="embeddings_ivf_sq8_cosine",
+            index_name="embeddings_ivf_flat_cosine",
         )
 
         return index_params
