@@ -3,3 +3,4 @@ uvicorn
 pymupdf
 sentence-transformers
 pymilvus
+llama-cpp-python
